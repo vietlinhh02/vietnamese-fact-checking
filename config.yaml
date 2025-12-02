@@ -1,0 +1,49 @@
+# Vietnamese Fact-Checking System Configuration
+
+# Model configuration
+model:
+  phobert_model: "vinai/phobert-base"
+  xlm_roberta_model: "xlm-roberta-base"
+  marianmt_model: "Helsinki-NLP/opus-mt-vi-en"
+  llm_provider: "gemini"  # Options: gemini, groq, local
+  llm_model: "gemini-1.5-flash"
+  max_length: 512
+  batch_size: 8
+  use_quantization: true
+  quantization_bits: 8
+
+# Search and crawling configuration
+search:
+  google_api_key: ""  # Set via environment variable GOOGLE_API_KEY
+  google_search_engine_id: ""  # Set via environment variable GOOGLE_SEARCH_ENGINE_ID
+  max_search_results: 10
+  rate_limit_rpm: 15
+  cache_ttl_hours: 24
+  approved_sources:
+    - "vnexpress.net"
+    - "vtv.vn"
+    - "vov.vn"
+    - "tuoitre.vn"
+    - "thanhnien.vn"
+    - "baochinhphu.vn"
+
+# Agent configuration
+agent:
+  max_iterations: 10
+  max_evidence_pieces: 20
+  min_evidence_pieces: 3
+  confidence_threshold: 0.7
+  gemini_api_key: ""  # Set via environment variable GEMINI_API_KEY
+  groq_api_key: ""  # Set via environment variable GROQ_API_KEY
+
+# Colab Pro configuration
+colab:
+  drive_mount_path: "/content/drive/MyDrive/vietnamese-fact-checking"
+  checkpoint_interval_minutes: 30
+  use_mixed_precision: true
+  gradient_checkpointing: true
+  max_gpu_memory_gb: 15.0
+
+# System configuration
+log_level: "INFO"
+random_seed: 42
