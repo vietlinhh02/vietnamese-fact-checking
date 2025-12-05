@@ -25,9 +25,10 @@ class ModelConfig:
 @dataclass
 class SearchConfig:
     """Configuration for search and crawling."""
-    google_api_key: str = ""
-    google_search_engine_id: str = ""
+    exa_api_key: str = ""
+    search_type: str = "auto"  # neural, auto, deep
     max_search_results: int = 10
+    use_context: bool = True  # Request context for RAG
     rate_limit_rpm: int = 15
     cache_ttl_hours: int = 24
     approved_sources: list = field(default_factory=lambda: [
@@ -117,8 +118,7 @@ class SystemConfig:
         config = cls()
         
         # Load API keys from environment
-        config.search.google_api_key = os.getenv('GOOGLE_API_KEY', '')
-        config.search.google_search_engine_id = os.getenv('GOOGLE_SEARCH_ENGINE_ID', '')
+        config.search.exa_api_key = os.getenv('EXA_API_KEY', '')
         config.agent.gemini_api_key = os.getenv('GEMINI_API_KEY', '')
         config.agent.groq_api_key = os.getenv('GROQ_API_KEY', '')
         
