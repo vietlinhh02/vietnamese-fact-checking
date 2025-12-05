@@ -34,6 +34,7 @@ ENV/
 
 # Environment variables
 .env
+.kiro
 
 # Logs
 logs/
