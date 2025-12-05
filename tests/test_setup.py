@@ -32,18 +32,18 @@ class TestConfiguration:
     
     def test_config_from_env(self):
         """Test loading configuration from environment variables."""
-        os.environ['GOOGLE_API_KEY'] = 'test_google_key'
+        os.environ['EXA_API_KEY'] = 'test_exa_key'
         os.environ['GEMINI_API_KEY'] = 'test_gemini_key'
         os.environ['LOG_LEVEL'] = 'DEBUG'
         
         config = SystemConfig.from_env()
         
-        assert config.search.google_api_key == 'test_google_key'
+        assert config.search.exa_api_key == 'test_exa_key'
         assert config.agent.gemini_api_key == 'test_gemini_key'
         assert config.log_level == 'DEBUG'
         
         # Cleanup
-        del os.environ['GOOGLE_API_KEY']
+        del os.environ['EXA_API_KEY']
         del os.environ['GEMINI_API_KEY']
         del os.environ['LOG_LEVEL']
     

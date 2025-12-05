@@ -14,50 +14,91 @@
   - Create configuration management (YAML/JSON) for hyperparameters and API keys
   - _Requirements: 12.1, 12.4_
 
-- [ ] 2. Implement data models and core interfaces
-  - [ ] 2.1 Create data classes for Claim, Evidence, Verdict, ReasoningStep
+- [x] 2. Implement data models and core interfaces
+
+
+
+
+
+  - [x] 2.1 Create data classes for Claim, Evidence, Verdict, ReasoningStep
+
+
     - Define dataclasses with type hints and validation
     - Implement serialization/deserialization methods (to_dict, from_dict)
     - Add utility methods for data manipulation
     - _Requirements: All (foundational)_
   
-  - [ ] 2.2 Write property test for data model serialization
+
+  - [x] 2.2 Write property test for data model serialization
+
     - **Property 2: Claim Extraction Context Preservation**
     - **Validates: Requirements 1.3**
   
-  - [ ] 2.3 Implement SQLite caching layer
+
+
+  - [x] 2.3 Implement SQLite caching layer
+
+
+
+
+
     - Create database schema for search_cache, content_cache, credibility_cache
     - Implement cache manager with TTL (time-to-live) support
     - Add cache hit/miss logging for performance monitoring
+
+
     - _Requirements: 4.4, 12.3_
   
-  - [ ] 2.4 Write unit tests for cache operations
+
+  - [x] 2.4 Write unit tests for cache operations
+
+
     - Test cache insertion, retrieval, expiration
     - Test concurrent access handling
     - _Requirements: 4.4_
 
-- [ ] 3. Build web crawling and content extraction module
-  - [ ] 3.1 Implement static HTML crawler with BeautifulSoup
+- [x] 3. Build web crawling and content extraction module
+
+
+
+
+  - [x] 3.1 Implement static HTML crawler with BeautifulSoup
+
+
     - Create crawler for approved Vietnamese news sources (VnExpress, VTV, VOV, Tuổi Trẻ, Thanh Niên)
     - Implement robots.txt compliance checking
     - Add request rate limiting and user-agent rotation
     - _Requirements: 3.1, 3.5_
   
-  - [ ] 3.2 Implement dynamic content crawler with Selenium
+  - [x] 3.2 Implement dynamic content crawler with Selenium
+
+
     - Setup headless Chrome driver for JavaScript rendering
     - Implement wait strategies for dynamic content loading
     - Add fallback to static parsing if Selenium fails
     - _Requirements: 3.2_
+
   
-  - [ ] 3.3 Implement content extraction with trafilatura
+  - [x] 3.3 Implement content extraction with trafilatura
+
+
+
+
+
     - Extract main article text, removing boilerplate (ads, menus, footers)
     - Extract metadata (title, author, publish date, URL)
     - Implement quality validation (minimum text length, presence of title)
+
+
     - _Requirements: 3.3, 3.4_
   
+
+
   - [ ] 3.4 Write property test for source whitelist compliance
     - **Property 6: Source Whitelist Compliance**
     - **Validates: Requirements 3.1**
+
+
   
   - [ ] 3.5 Write property test for content extraction purity
     - **Property 7: Content Extraction Purity**
@@ -69,44 +110,70 @@
     - Test timeout handling
     - _Requirements: 3.5_
 
-- [ ] 4. Checkpoint - Verify crawling module works
-  - Ensure all tests pass, ask the user if questions arise.
+- [x] 4. Checkpoint - Verify crawling module works
 
-- [ ] 5. Implement source credibility analyzer
-  - [ ] 5.1 Create credibility feature extractor
+
+
+
+
+  - Ensure all tests pass, ask the user if questions arise.
+-
+
+- [x] 5. Implement source credibility analyzer
+
+
+
+
+  - [x] 5.1 Create credibility feature extractor
+
+
     - Extract domain features (TLD, domain age, HTTPS)
     - Extract content features (author, date, article length, writing quality)
     - Implement state-managed source detection for Vietnamese outlets
     - _Requirements: 5.2, 5.3_
   
-  - [ ] 5.2 Implement rule-based credibility scoring
+  - [x] 5.2 Implement rule-based credibility scoring
+
     - Create weighted scoring formula (state-managed +0.4, HTTPS +0.1, etc.)
     - Compute overall credibility score [0, 1]
     - Generate explanation for score
     - _Requirements: 5.1, 5.5_
   
-  - [ ] 5.3 Integrate Media Bias Fact Check API (optional, free tier)
+  - [x] 5.3 Integrate Media Bias Fact Check API (optional, free tier)
+
+
     - Implement API client with rate limiting
     - Merge MBFC ratings into credibility score
     - Handle API failures gracefully
     - _Requirements: 5.4_
   
-  - [ ] 5.4 Write property test for credibility score range
+  - [x] 5.4 Write property test for credibility score range
+
+
     - **Property 12: Credibility Score Existence**
     - **Validates: Requirements 5.1, 5.5**
   
-  - [ ] 5.5 Write property test for state-managed source priority
+  - [x] 5.5 Write property test for state-managed source priority
+
     - **Property 13: State-Managed Source Priority**
     - **Validates: Requirements 5.2**
+- [x] 6. Build claim detection module with PhoBERT
+
+
 
 - [ ] 6. Build claim detection module with PhoBERT
-  - [ ] 6.1 Prepare training data for claim detection
+
+  - [x] 6.1 Prepare training data for claim detection
+
+
     - Collect Vietnamese news articles
     - Manually annotate sentences as claim/non-claim (or use weak supervision)
     - Split into train/val/test sets (70/15/15)
     - _Requirements: 1.1, 1.2_
   
-  - [ ] 6.2 Fine-tune PhoBERT for claim classification
+  - [x] 6.2 Fine-tune PhoBERT for claim classification
+
+
     - Load pretrained `vinai/phobert-base` model
     - Add classification head for binary classification
     - Implement training loop with AdamW optimizer and linear warmup
@@ -114,65 +181,95 @@
     - Save best checkpoint based on validation F1
     - _Requirements: 1.1, 1.2, 1.5_
   
-  - [ ] 6.3 Implement claim extraction pipeline
+  - [x] 6.3 Implement claim extraction pipeline
+
+
     - Apply Vietnamese word segmentation (pyvi or VnCoreNLP)
     - Use sliding window for long documents
     - Extract claim with surrounding context
     - Batch process for GPU efficiency
     - _Requirements: 1.3, 1.4_
   
-  - [ ] 6.4 Write property test for claim detection completeness
+  - [x] 6.4 Write property test for claim detection completeness
+
+
     - **Property 1: Claim Detection Completeness**
     - **Validates: Requirements 1.1, 1.2, 1.4**
   
-  - [ ] 6.5 Write property test for context preservation
+  - [x] 6.5 Write property test for context preservation
+
+
     - **Property 2: Claim Extraction Context Preservation**
     - **Validates: Requirements 1.3**
 
-- [ ] 7. Implement cross-lingual search module
-  - [ ] 7.1 Implement translation service
+- [x] 7. Implement cross-lingual search module
+
+
+  - [x] 7.1 Implement translation service
+
+
     - Setup MarianMT model (`Helsinki-NLP/opus-mt-vi-en`) for local translation
     - Implement Google Translate API client as fallback (free tier: 500K chars/month)
     - Add translation caching to reduce API calls
     - _Requirements: 4.2, 4.5_
   
-  - [ ] 7.2 Implement search query generator
+  - [x] 7.2 Implement search query generator
+
+
     - Generate Vietnamese queries from claim (direct, entity-focused, question form)
     - Generate English queries via translation
     - Implement query decomposition for complex claims
     - _Requirements: 4.1, 4.2_
   
-  - [ ] 7.3 Implement Google Custom Search API client
-    - Setup API client with free tier quota management (100 queries/day)
-    - Implement rate limiting and exponential backoff
-    - Parse search results (title, snippet, URL, rank)
+
+
+  - [x] 7.3 Implement Exa Search API client
+    - Setup Exa API client with API key management
+    - Implement search with 'auto' or 'neural' mode for intelligent results
+    - Support content extraction (text, highlights, summary) directly from search
     - Cache results in SQLite
     - _Requirements: 4.3, 4.4_
   
-  - [ ] 7.4 Write property test for bilingual query generation
+  - [x] 7.4 Write property test for bilingual query generation
+
+
     - **Property 9: Bilingual Query Generation**
     - **Validates: Requirements 4.1, 4.2**
   
-  - [ ] 7.5 Write property test for multilingual evidence collection
+  - [x] 7.5 Write property test for multilingual evidence collection
     - **Property 10: Multilingual Evidence Collection**
     - **Validates: Requirements 4.3**
   
-  - [ ] 7.6 Write property test for API rate limit compliance
+  - [x] 7.6 Write property test for API rate limit compliance
     - **Property 11: API Rate Limit Compliance**
     - **Validates: Requirements 4.4**
 
 - [ ] 8. Checkpoint - Verify search and translation work
+
+
+
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 9. Build stance detection module with XLM-RoBERTa
-  - [ ] 9.1 Prepare cross-lingual stance detection dataset
+- [x] 9. Build stance detection module with XLM-RoBERTa
+
+
+
+
+
+
+  - [x] 9.1 Prepare cross-lingual stance detection dataset
+
+
     - Translate FEVER/SNLI dataset to Vietnamese using MarianMT
     - Collect Vietnamese claim-evidence pairs from news
     - Augment with back-translation
     - Create train/val/test splits
     - _Requirements: 6.1, 6.2, 6.5_
   
-  - [ ] 9.2 Fine-tune XLM-RoBERTa for stance detection
+  - [x] 9.2 Fine-tune XLM-RoBERTa for stance detection
+
+
+
     - Load pretrained `xlm-roberta-base` model
     - Add 3-class classification head (Support/Refute/Neutral)
     - Implement training with cross-entropy loss
@@ -180,31 +277,48 @@
     - Apply gradient accumulation if needed
     - _Requirements: 6.1, 6.2_
   
-  - [ ] 9.3 Implement stance detection inference
+  - [x] 9.3 Implement stance detection inference
+
+
     - Create inference pipeline for claim-evidence pairs
     - Support both Vietnamese-Vietnamese and Vietnamese-English pairs
     - Output stance label and confidence scores
     - Batch process for efficiency
     - _Requirements: 6.3, 6.4_
   
-  - [ ] 9.4 Write property test for stance classification completeness
+  - [x] 9.4 Write property test for stance classification completeness
+
+
     - **Property 15: Stance Classification Completeness**
     - **Validates: Requirements 6.3, 6.4**
 
-- [ ] 10. Implement NER and relation extraction for graph building
-  - [ ] 10.1 Setup NER models
+- [-] 10. Implement NER and relation extraction for graph building
+
+
+
+  - [x] 10.1 Setup NER models
+
+
     - Fine-tune PhoBERT for Vietnamese NER (PERSON, ORG, LOC, DATE, NUMBER)
     - Use spaCy `en_core_web_sm` for English NER
     - Implement entity extraction pipeline
     - _Requirements: 7.1_
   
-  - [ ] 10.2 Implement relation extraction
+  - [x] 10.2 Implement relation extraction
+
+
     - Fine-tune XLM-R for relation classification (works_for, located_in, etc.)
     - Use dependency parsing as fallback for simple relations
     - Extract relations between entities
     - _Requirements: 7.2_
   
-  - [ ] 10.3 Build knowledge graph constructor
+  - [x] 10.3 Build knowledge graph constructor
+
+
+
+
+
+
     - Implement KnowledgeGraph class with node/edge management
     - Add entity linking and merging logic (string similarity + embeddings)
     - Handle contradictions by preserving both with source attribution
@@ -276,7 +390,7 @@
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
   
   - [ ] 13.3 Implement tool executor
-    - Create Tool interface and concrete implementations (SearchTool, CrawlTool, CredibilityTool)
+    - Create Tool interface and concrete implementations (SearchTool (Exa), CrawlTool, CredibilityTool)
     - Implement tool parameter parsing from LLM output
     - Add error handling and retry logic
     - _Requirements: 2.2, 2.3_
