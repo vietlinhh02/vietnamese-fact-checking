@@ -15,7 +15,7 @@ class ModelConfig:
     xlm_roberta_model: str = "xlm-roberta-base"
     marianmt_model: str = "Helsinki-NLP/opus-mt-vi-en"
     llm_provider: str = "gemini"  # "gemini", "groq", or "local"
-    llm_model: str = "gemini-1.5-flash"
+    llm_model: str = "gemini-2.5-flash"
     max_length: int = 512
     batch_size: int = 8
     use_quantization: bool = True
@@ -26,8 +26,9 @@ class ModelConfig:
 class SearchConfig:
     """Configuration for search and crawling."""
     exa_api_key: str = ""
+    firecrawl_api_key: str = ""  # Firecrawl API for reliable web scraping
     search_type: str = "auto"  # neural, auto, deep
-    max_search_results: int = 10
+    max_search_results: int = 5  # Reduced from 10 to save API costs
     use_context: bool = True  # Request context for RAG
     rate_limit_rpm: int = 15
     cache_ttl_hours: int = 24
@@ -37,16 +38,37 @@ class SearchConfig:
         "vov.vn",
         "tuoitre.vn",
         "thanhnien.vn",
-        "baochinhphu.vn"
+        "baochinhphu.vn",
+        "vietnamnet.vn",
+        "dantri.com.vn",
+        "laodong.vn",
+        "tienphong.vn",
+        "sggp.org.vn",
+        "nhandan.vn",
+        "qdnd.vn",
+        "baotintuc.vn",
+        "vietnamplus.vn",
+        "vtc.vn",
+        "vtcnews.vn",
+        "cand.com.vn",
+        "congluan.vn",
+        "znews.vn",
+        "zingnews.vn",
+        "cafef.vn",
+        "cafebiz.vn",
+        "kenh14.vn",
+        "afamily.vn",
+        "soha.vn",
+        "baomoi.com"
     ])
 
 
 @dataclass
 class AgentConfig:
     """Configuration for ReAct agent."""
-    max_iterations: int = 10
-    max_evidence_pieces: int = 20
-    min_evidence_pieces: int = 3
+    max_iterations: int = 5  # Reduced from 10 to limit API calls
+    max_evidence_pieces: int = 10  # Reduced from 20
+    min_evidence_pieces: int = 2   # Reduced from 3
     confidence_threshold: float = 0.7
     gemini_api_key: str = ""
     groq_api_key: str = ""
@@ -118,8 +140,9 @@ class SystemConfig:
         config = cls()
         
         # Load API keys from environment
-        config.search.exa_api_key = os.getenv('EXA_API_KEY', '')
-        config.agent.gemini_api_key = os.getenv('GEMINI_API_KEY', '')
+        config.search.exa_api_key = os.getenv('EXA_API_KEY', '3484caa0-9568-47bb-b4b5-ee96aaf5915b')
+        config.search.firecrawl_api_key = os.getenv('FIRECRAWL_API_KEY', 'fc-e3261bcfd4f848f89dfd788bcf66d643')
+        config.agent.gemini_api_key = os.getenv('GEMINI_API_KEY', 'AIzaSyC23AkCfIVDzGE-XT_Iwf3ApVudXi8aYUU')
         config.agent.groq_api_key = os.getenv('GROQ_API_KEY', '')
         
         # Override other settings if provided

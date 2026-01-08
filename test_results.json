@@ -1,0 +1,28 @@
+{
+  "accuracy": 0.0,
+  "correct_predictions": 0,
+  "total_cases": 3,
+  "results": [
+    {
+      "claim_text": "Việt Nam gia nhập ASEAN vào năm 1995",
+      "expected": "supported",
+      "predicted": "error",
+      "correct": false,
+      "error": "numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject"
+    },
+    {
+      "claim_text": "Hà Nội là thủ đô của Thái Lan",
+      "expected": "refuted",
+      "predicted": "error",
+      "correct": false,
+      "error": "numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject"
+    },
+    {
+      "claim_text": "Dân số Việt Nam sẽ đạt 100 triệu người vào năm 2030",
+      "expected": "not_enough_info",
+      "predicted": "error",
+      "correct": false,
+      "error": "numpy.dtype size changed, may indicate binary incompatibility. Expected 96 from C header, got 88 from PyObject"
+    }
+  ]
+}

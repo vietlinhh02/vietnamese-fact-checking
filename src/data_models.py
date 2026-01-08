@@ -3,8 +3,18 @@
 from dataclasses import dataclass, field, asdict
 from typing import List, Dict, Optional, Any
 from datetime import datetime
+from enum import Enum
 import json
 import numpy as np
+
+
+class LegalStatus(Enum):
+    """Legal document status for temporal reasoning."""
+    PASSED = "passed"           # Document approved but not yet effective
+    EFFECTIVE = "effective"     # Document currently in effect
+    IMPLEMENTED = "implemented" # Policy fully implemented
+    PENDING = "pending"         # Future policy/plan
+    UNKNOWN = "unknown"         # Status cannot be determined
 
 
 @dataclass
@@ -19,6 +29,7 @@ class Claim:
     end_idx: int = 0
     language: str = "vi"
     id: Optional[str] = None
+    parent_claim_id: Optional[str] = None  # For sub-claims: ID of the parent compound claim
     
     def __post_init__(self):
         """Validate claim data after initialization."""
@@ -81,6 +92,8 @@ class Evidence:
     stance: Optional[str] = None
     stance_confidence: Optional[float] = None
     id: Optional[str] = None
+    temporal_marker: Optional[str] = None  # "CURRENT", "FUTURE_POLICY", "HISTORICAL"
+    legal_status: Optional[str] = None  # LegalStatus value: "passed", "effective", "implemented", "pending"
     
     def __post_init__(self):
         """Validate evidence data after initialization."""
@@ -178,6 +191,17 @@ class ReasoningStep:
         return cls.from_dict(data)
 
 
+# Valid verdict labels - expanded for nuanced fact-checking
+VERDICT_LABELS = [
+    "supported",           # Claim fully supported by evidence
+    "refuted",             # Claim contradicted by evidence
+    "not_enough_info",     # Insufficient evidence
+    "partially_supported", # Some aspects supported, others unclear
+    "mixed",               # Conflicting evidence (some support, some refute)
+    "context_dependent",   # Verdict depends on temporal/legal context
+]
+
+
 @dataclass
 class Verdict:
     """Final verdict on claim verification."""
@@ -190,14 +214,18 @@ class Verdict:
     explanation: str = ""
     reasoning_trace: List[ReasoningStep] = field(default_factory=list)
     quality_score: float = 0.0
+    # New fields for confidence capping metadata
+    confidence_cap_reason: Optional[str] = None  # Why confidence was capped
+    unverified_claim_count: int = 0  # Number of unverified sub-claims
+    temporal_context: Optional[str] = None  # Temporal reasoning notes
     
     def __post_init__(self):
         """Validate verdict data after initialization."""
         if not self.claim_id:
             raise ValueError("Claim ID cannot be empty")
         
-        if self.label not in ["supported", "refuted", "not_enough_info"]:
-            raise ValueError(f"Invalid label: {self.label}")
+        if self.label not in VERDICT_LABELS:
+            raise ValueError(f"Invalid label: {self.label}. Must be one of {VERDICT_LABELS}")
         
         # Validate confidence scores
         if not self.confidence_scores:

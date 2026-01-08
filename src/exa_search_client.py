@@ -194,7 +194,8 @@ class ExaSearchClient:
         start_published_date: Optional[str] = None,
         end_published_date: Optional[str] = None,
         use_cache: bool = True,
-        max_retries: int = 3
+        max_retries: int = 3,
+        language: str = "vi"
     ) -> List[SearchResult]:
         """
         Execute a search query.
@@ -208,6 +209,7 @@ class ExaSearchClient:
             end_published_date: ISO 8601 date string
             use_cache: Whether to use cached results
             max_retries: Maximum number of retry attempts
+            language: Language code for caching context (default: "vi")
         
         Returns:
             List of SearchResult objects
@@ -226,7 +228,7 @@ class ExaSearchClient:
         
         # Check cache first
         if use_cache and self.cache_manager:
-            cached = self.cache_manager.get_search_results(cache_key)
+            cached = self.cache_manager.get_search_results(cache_key, language)
             if cached:
                 self.stats['cache_hits'] += 1
                 logger.debug(f"Cache hit for query: {query[:50]}...")
@@ -248,7 +250,7 @@ class ExaSearchClient:
                 # Cache results
                 if use_cache and self.cache_manager:
                     results_dict = [r.to_dict() for r in results]
-                    self.cache_manager.set_search_results(cache_key, results_dict)
+                    self.cache_manager.set_search_results(cache_key, language, results_dict)
                 
                 # Reset backoff on success
                 self.rate_limiter.reset_backoff()
@@ -316,10 +318,16 @@ class ExaSearchClient:
             "type": self.search_type,
             "numResults": min(num_results, 100),  # API max is 100
             "contents": {
-                "text": True,
+                "text": {
+                    "maxCharacters": 5000,  # Request more text content
+                    "includeHtmlTags": False
+                },
                 "highlights": {
-                    "numSentences": 2,
-                    "highlightsPerUrl": 1
+                    "numSentences": 5,  # More sentences for better context
+                    "highlightsPerUrl": 3  # More highlights per result
+                },
+                "summary": {
+                    "query": query  # Add summary based on query
                 }
             }
         }

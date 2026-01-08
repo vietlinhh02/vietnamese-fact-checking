@@ -205,8 +205,8 @@ class GraphBuilder:
             import dgl
             import torch
         except ImportError:
-            logger.error("DGL library not installed. Install with: pip install dgl torch")
-            raise ImportError("DGL library required for graph neural network processing")
+            logger.warning("DGL library not available. Returning None.")
+            return None
         if graph.node_count() == 0:
             logger.warning("Cannot convert empty graph to DGL format")
             return None

@@ -1,0 +1,175 @@
+{
+  "claim": {
+    "text": "Việt Nam có 63 tỉnh thành, giáp biên giới với 3 quốc gia và có diện tích khoảng 331,000 km²",
+    "context": "",
+    "confidence": 0.85,
+    "sentence_type": "factual_claim",
+    "start_idx": 0,
+    "end_idx": 0,
+    "language": "vi",
+    "id": "b26b270030016d50"
+  },
+  "verdict": {
+    "claim_id": "b26b270030016d50",
+    "label": "supported",
+    "confidence_scores": {
+      "supported": 0.82,
+      "refuted": 0.12,
+      "not_enough_info": 0.06
+    },
+    "supporting_evidence": [
+      "7b4496a88bb75f38",
+      "40494295466cfe2b",
+      "ee0d2d7ed7c84c45"
+    ],
+    "refuting_evidence": [
+      "e3d556ed1001db29"
+    ],
+    "explanation": "## Giải thích Kiểm tra Sự thật\n\n**TUYÊN BỐ CẦN XÁC MINH:** Việt Nam có 63 tỉnh thành, giáp biên giới với 3 quốc gia và có diện tích khoảng 331,000 km².\n\n**KẾT LUẬN:** ĐƯỢC HỖ TRỢ (SUPPORTED)\n**ĐIỂM TỰ TIN:** 0.82\n\n---\n\n### Giải thích Chi tiết\n\nTuyên bố này được hỗ trợ bởi các bằng chứng được cung cấp, mặc dù có sự khác biệt nhỏ về số liệu diện tích chính xác.\n\n#### 1. Số lượng Đơn vị Hành chính Cấp tỉnh (63 tỉnh thành)\n\nBằng chứng cho thấy Việt Nam có 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013, bao gồm 58 tỉnh và 5 thành phố trực thuộc trung ương [2].\n\n*   **Bằng chứng Hỗ trợ:** Việt Nam có 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013 [2].\n*   **Bằng chứng Mâu thuẫn (Đã lỗi thời):** Một số nguồn không chính thức tuyên bố Việt Nam có 64 tỉnh, nhưng đây là thông tin lỗi thời từ trước các cuộc cải cách hành chính [5].\n\n#### 2. Số lượng Quốc gia Giáp Biên giới (3 quốc gia)\n\nViệt Nam có biên giới đất liền giáp với 3 quốc gia [1], [3].\n\n*   **Bằng chứng Hỗ trợ:** Việt Nam có biên giới đất liền với 3 nước: Trung Quốc ở phía bắc, Lào và Campuchia ở phía tây [1]. Nguồn quốc tế cũng xác nhận Việt Nam giáp biên giới với Trung Quốc ở phía bắc, Lào và Campuchia ở phía tây [3].\n\n#### 3. Diện tích (Khoảng 331,000 km²)\n\nTuyên bố sử dụng con số \"khoảng 331,000 km²\", và các nguồn cung cấp các số liệu rất gần với con số này.\n\n*   **Bằng chứng Hỗ trợ:** Một nguồn quốc tế cung cấp tổng diện tích xấp xỉ là 331,212 km² [3].\n*   **Bằng chứng Khác:** Tổng cục Thống kê đưa ra con số diện tích là 330,967 km², lưu ý rằng có thể có sự khác biệt nhỏ trong cách tính toán [4].\n\nVì các số liệu chính thức và quốc tế đều dao động quanh mốc 331,000 km² (331,212 km² và 330,967 km²), tuyên bố về diện tích \"khoảng 331,000 km²\" được coi là chính xác trong phạm vi làm tròn [3], [4].\n\n### Quá trình Suy luận\n\nQuá trình kiểm tra được thực hiện bằng cách phân tách tuyên bố thành ba phần và đối chiếu từng phần với các bằng chứng có sẵn:\n\n1.  **Xác minh số tỉnh thành:** Bằng chứng từ nguồn chính phủ xác nhận con số 63 tỉnh thành [2], bác bỏ thông tin lỗi thời là 64 tỉnh [5].\n2.  **Xác minh biên giới:** Bằng chứng từ Bộ Ngoại giao xác nhận có 3 nước giáp biên giới [1].\n3.  **Xác minh diện tích:** Các nguồn uy tín đưa ra số liệu gần 331,000 km² (331,212 km² và 330,967 km²), cho thấy con số \"khoảng 331\n\nSources:\n[1] Bộ Ngoại giao - Biên giới Việt Nam - https://mofa.gov.vn/bien-gioi-viet-nam\n[2] Tổ chức hành chính Việt Nam - https://baochinhphu.vn/hanh-chinh-dia-phuong-viet-nam\n[3] Geography of Vietnam - Wikipedia - https://en.wikipedia.org/wiki/Geography_of_Vietnam\n[4] Tổng cục Thống kê - Diện tích Việt Nam - https://gso.gov.vn/dien-tich-viet-nam\n[5] Outdated Vietnam Information - https://example.com/outdated-vietnam-info\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Tôi cần xác minh ba thông tin chính: số lượng tỉnh thành, số quốc gia giáp biên giới, và diện tích của Việt Nam\nAction: search\n  query: Việt Nam 63 tỉnh thành Hiến pháp 2013\nObservation: Tìm thấy thông tin chính thức xác nhận 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013\n\nStep 2:\nThought: Cần kiểm tra thông tin về biên giới và các nước láng giềng\nAction: search\n  query: Vietnam borders China Laos Cambodia\nObservation: Xác nhận Việt Nam giáp biên giới với 3 quốc gia: Trung Quốc, Lào và Campuchia\n\nStep 3:\nThought: Cần xác minh diện tích chính xác của Việt Nam\nAction: search\n  query: Vietnam area 331000 square kilometers official\nObservation: Tìm thấy thông tin diện tích khoảng 331,212 km² từ nguồn quốc tế và 330,967 km² từ Tổng cục Thống kê\n\nStep 4:\nThought: Nên phân tích độ tin cậy của các nguồn thông tin khác nhau\nAction: analyze_credibility\n  sources: ['baochinhphu.vn', 'wikipedia.org', 'gso.gov.vn', 'mofa.gov.vn']\nObservation: Các nguồn chính phủ có độ tin cậy cao (0.9-0.95), Wikipedia có độ tin cậy trung bình (0.8)\n\nStep 5:\nThought: Cần đánh giá tổng thể tính chính xác của tuyên bố dựa trên tất cả bằng chứng\nAction: synthesize\n  evidence_count: 5\n  supporting: 3\n  neutral: 1\n  refuting: 1\nObservation: Đa số bằng chứng uy tín hỗ trợ tuyên bố, chỉ có sự khác biệt nhỏ về diện tích và một nguồn không đáng tin cậy phản bác\n\n",
+    "reasoning_trace": [
+      {
+        "iteration": 1,
+        "thought": "Tôi cần xác minh ba thông tin chính: số lượng tỉnh thành, số quốc gia giáp biên giới, và diện tích của Việt Nam",
+        "action": "search",
+        "action_input": {
+          "query": "Việt Nam 63 tỉnh thành Hiến pháp 2013"
+        },
+        "observation": "Tìm thấy thông tin chính thức xác nhận 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013",
+        "timestamp": "2026-01-07T13:02:25.904385"
+      },
+      {
+        "iteration": 2,
+        "thought": "Cần kiểm tra thông tin về biên giới và các nước láng giềng",
+        "action": "search",
+        "action_input": {
+          "query": "Vietnam borders China Laos Cambodia"
+        },
+        "observation": "Xác nhận Việt Nam giáp biên giới với 3 quốc gia: Trung Quốc, Lào và Campuchia",
+        "timestamp": "2026-01-07T13:02:25.904385"
+      },
+      {
+        "iteration": 3,
+        "thought": "Cần xác minh diện tích chính xác của Việt Nam",
+        "action": "search",
+        "action_input": {
+          "query": "Vietnam area 331000 square kilometers official"
+        },
+        "observation": "Tìm thấy thông tin diện tích khoảng 331,212 km² từ nguồn quốc tế và 330,967 km² từ Tổng cục Thống kê",
+        "timestamp": "2026-01-07T13:02:25.904385"
+      },
+      {
+        "iteration": 4,
+        "thought": "Nên phân tích độ tin cậy của các nguồn thông tin khác nhau",
+        "action": "analyze_credibility",
+        "action_input": {
+          "sources": [
+            "baochinhphu.vn",
+            "wikipedia.org",
+            "gso.gov.vn",
+            "mofa.gov.vn"
+          ]
+        },
+        "observation": "Các nguồn chính phủ có độ tin cậy cao (0.9-0.95), Wikipedia có độ tin cậy trung bình (0.8)",
+        "timestamp": "2026-01-07T13:02:25.904385"
+      },
+      {
+        "iteration": 5,
+        "thought": "Cần đánh giá tổng thể tính chính xác của tuyên bố dựa trên tất cả bằng chứng",
+        "action": "synthesize",
+        "action_input": {
+          "evidence_count": 5,
+          "supporting": 3,
+          "neutral": 1,
+          "refuting": 1
+        },
+        "observation": "Đa số bằng chứng uy tín hỗ trợ tuyên bố, chỉ có sự khác biệt nhỏ về diện tích và một nguồn không đáng tin cậy phản bác",
+        "timestamp": "2026-01-07T13:02:25.904385"
+      }
+    ],
+    "quality_score": 0.0
+  },
+  "evidence": [
+    {
+      "text": "Việt Nam có 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013, bao gồm 58 tỉnh và 5 thành phố trực thuộc trung ương.",
+      "source_url": "https://baochinhphu.vn/hanh-chinh-dia-phuong-viet-nam",
+      "source_title": "Tổ chức hành chính Việt Nam",
+      "source_author": null,
+      "publish_date": null,
+      "credibility_score": 0.95,
+      "language": "vi",
+      "stance": "support",
+      "stance_confidence": 0.9,
+      "id": "7b4496a88bb75f38"
+    },
+    {
+      "text": "Vietnam borders China to the north, Laos and Cambodia to the west, with a total area of approximately 331,212 square kilometers.",
+      "source_url": "https://en.wikipedia.org/wiki/Geography_of_Vietnam",
+      "source_title": "Geography of Vietnam - Wikipedia",
+      "source_author": null,
+      "publish_date": null,
+      "credibility_score": 0.8,
+      "language": "en",
+      "stance": "support",
+      "stance_confidence": 0.85,
+      "id": "40494295466cfe2b"
+    },
+    {
+      "text": "Theo một số nguồn, diện tích Việt Nam là 330,967 km², có thể có sự khác biệt nhỏ trong cách tính toán.",
+      "source_url": "https://gso.gov.vn/dien-tich-viet-nam",
+      "source_title": "Tổng cục Thống kê - Diện tích Việt Nam",
+      "source_author": null,
+      "publish_date": null,
+      "credibility_score": 0.9,
+      "language": "vi",
+      "stance": "neutral",
+      "stance_confidence": 0.7,
+      "id": "8eb32ad1a37df4ff"
+    },
+    {
+      "text": "Việt Nam có biên giới đất liền với 3 nước: Trung Quốc ở phía bắc, Lào và Campuchia ở phía tây.",
+      "source_url": "https://mofa.gov.vn/bien-gioi-viet-nam",
+      "source_title": "Bộ Ngoại giao - Biên giới Việt Nam",
+      "source_author": null,
+      "publish_date": null,
+      "credibility_score": 0.95,
+      "language": "vi",
+      "stance": "support",
+      "stance_confidence": 0.95,
+      "id": "ee0d2d7ed7c84c45"
+    },
+    {
+      "text": "Some unofficial sources claim Vietnam has 64 provinces, but this is outdated information from before administrative reforms.",
+      "source_url": "https://example.com/outdated-vietnam-info",
+      "source_title": "Outdated Vietnam Information",
+      "source_author": null,
+      "publish_date": null,
+      "credibility_score": 0.3,
+      "language": "en",
+      "stance": "refute",
+      "stance_confidence": 0.6,
+      "id": "e3d556ed1001db29"
+    }
+  ],
+  "explanation": "## Giải thích Kiểm tra Sự thật\n\n**TUYÊN BỐ CẦN XÁC MINH:** Việt Nam có 63 tỉnh thành, giáp biên giới với 3 quốc gia và có diện tích khoảng 331,000 km².\n\n**KẾT LUẬN:** ĐƯỢC HỖ TRỢ (SUPPORTED)\n**ĐIỂM TỰ TIN:** 0.82\n\n---\n\n### Giải thích Chi tiết\n\nTuyên bố này được hỗ trợ bởi các bằng chứng được cung cấp, mặc dù có sự khác biệt nhỏ về số liệu diện tích chính xác.\n\n#### 1. Số lượng Đơn vị Hành chính Cấp tỉnh (63 tỉnh thành)\n\nBằng chứng cho thấy Việt Nam có 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013, bao gồm 58 tỉnh và 5 thành phố trực thuộc trung ương [2].\n\n*   **Bằng chứng Hỗ trợ:** Việt Nam có 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013 [2].\n*   **Bằng chứng Mâu thuẫn (Đã lỗi thời):** Một số nguồn không chính thức tuyên bố Việt Nam có 64 tỉnh, nhưng đây là thông tin lỗi thời từ trước các cuộc cải cách hành chính [5].\n\n#### 2. Số lượng Quốc gia Giáp Biên giới (3 quốc gia)\n\nViệt Nam có biên giới đất liền giáp với 3 quốc gia [1], [3].\n\n*   **Bằng chứng Hỗ trợ:** Việt Nam có biên giới đất liền với 3 nước: Trung Quốc ở phía bắc, Lào và Campuchia ở phía tây [1]. Nguồn quốc tế cũng xác nhận Việt Nam giáp biên giới với Trung Quốc ở phía bắc, Lào và Campuchia ở phía tây [3].\n\n#### 3. Diện tích (Khoảng 331,000 km²)\n\nTuyên bố sử dụng con số \"khoảng 331,000 km²\", và các nguồn cung cấp các số liệu rất gần với con số này.\n\n*   **Bằng chứng Hỗ trợ:** Một nguồn quốc tế cung cấp tổng diện tích xấp xỉ là 331,212 km² [3].\n*   **Bằng chứng Khác:** Tổng cục Thống kê đưa ra con số diện tích là 330,967 km², lưu ý rằng có thể có sự khác biệt nhỏ trong cách tính toán [4].\n\nVì các số liệu chính thức và quốc tế đều dao động quanh mốc 331,000 km² (331,212 km² và 330,967 km²), tuyên bố về diện tích \"khoảng 331,000 km²\" được coi là chính xác trong phạm vi làm tròn [3], [4].\n\n### Quá trình Suy luận\n\nQuá trình kiểm tra được thực hiện bằng cách phân tách tuyên bố thành ba phần và đối chiếu từng phần với các bằng chứng có sẵn:\n\n1.  **Xác minh số tỉnh thành:** Bằng chứng từ nguồn chính phủ xác nhận con số 63 tỉnh thành [2], bác bỏ thông tin lỗi thời là 64 tỉnh [5].\n2.  **Xác minh biên giới:** Bằng chứng từ Bộ Ngoại giao xác nhận có 3 nước giáp biên giới [1].\n3.  **Xác minh diện tích:** Các nguồn uy tín đưa ra số liệu gần 331,000 km² (331,212 km² và 330,967 km²), cho thấy con số \"khoảng 331\n\nSources:\n[1] Bộ Ngoại giao - Biên giới Việt Nam - https://mofa.gov.vn/bien-gioi-viet-nam\n[2] Tổ chức hành chính Việt Nam - https://baochinhphu.vn/hanh-chinh-dia-phuong-viet-nam\n[3] Geography of Vietnam - Wikipedia - https://en.wikipedia.org/wiki/Geography_of_Vietnam\n[4] Tổng cục Thống kê - Diện tích Việt Nam - https://gso.gov.vn/dien-tich-viet-nam\n[5] Outdated Vietnam Information - https://example.com/outdated-vietnam-info\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Tôi cần xác minh ba thông tin chính: số lượng tỉnh thành, số quốc gia giáp biên giới, và diện tích của Việt Nam\nAction: search\n  query: Việt Nam 63 tỉnh thành Hiến pháp 2013\nObservation: Tìm thấy thông tin chính thức xác nhận 63 đơn vị hành chính cấp tỉnh theo Hiến pháp 2013\n\nStep 2:\nThought: Cần kiểm tra thông tin về biên giới và các nước láng giềng\nAction: search\n  query: Vietnam borders China Laos Cambodia\nObservation: Xác nhận Việt Nam giáp biên giới với 3 quốc gia: Trung Quốc, Lào và Campuchia\n\nStep 3:\nThought: Cần xác minh diện tích chính xác của Việt Nam\nAction: search\n  query: Vietnam area 331000 square kilometers official\nObservation: Tìm thấy thông tin diện tích khoảng 331,212 km² từ nguồn quốc tế và 330,967 km² từ Tổng cục Thống kê\n\nStep 4:\nThought: Nên phân tích độ tin cậy của các nguồn thông tin khác nhau\nAction: analyze_credibility\n  sources: ['baochinhphu.vn', 'wikipedia.org', 'gso.gov.vn', 'mofa.gov.vn']\nObservation: Các nguồn chính phủ có độ tin cậy cao (0.9-0.95), Wikipedia có độ tin cậy trung bình (0.8)\n\nStep 5:\nThought: Cần đánh giá tổng thể tính chính xác của tuyên bố dựa trên tất cả bằng chứng\nAction: synthesize\n  evidence_count: 5\n  supporting: 3\n  neutral: 1\n  refuting: 1\nObservation: Đa số bằng chứng uy tín hỗ trợ tuyên bố, chỉ có sự khác biệt nhỏ về diện tích và một nguồn không đáng tin cậy phản bác\n\n",
+  "metadata": {
+    "processing_time": 67.3,
+    "sources_checked": 5,
+    "languages_used": [
+      "vi",
+      "en"
+    ],
+    "credibility_range": [
+      0.3,
+      0.95
+    ],
+    "contradiction_detected": true,
+    "cross_lingual_verification": true
+  },
+  "demo_timestamp": "2025-12-12T15:06:00Z",
+  "system_info": {
+    "rag_generator": "RAGExplanationGenerator v1.0",
+    "llm_provider": "MockLLMProvider",
+    "evidence_retriever": "EvidenceRetriever",
+    "test_data_source": "rag_test_dataset.json"
+  }
+}

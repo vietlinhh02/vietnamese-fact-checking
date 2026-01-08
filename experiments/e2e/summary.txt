@@ -1,0 +1,23 @@
+Total results: 3
+
+--- Claim 1 ---
+Text: Việt Nam có 63 tỉnh thành
+Verdict: partially_supported
+Confidence: {'supported': 0.6, 'refuted': 0.1, 'not_enough_info': 0.30000000000000004}
+Evidence count: 3
+Explanation length: 10812
+
+--- Claim 2 ---
+Text: Việt Nam có diện tích khoảng 331,000 km²
+Verdict: partially_supported
+Confidence: {'supported': 0.75, 'refuted': 0.1, 'not_enough_info': 0.15000000000000002}
+Evidence count: 6
+Explanation length: 7607
+
+--- Claim 3 ---
+Text: Việt Nam giáp biên giới với 3 quốc gia
+Verdict: partially_supported
+Confidence: {'supported': 0.75, 'refuted': 0.0, 'not_enough_info': 0.25}
+Evidence count: 2
+Explanation length: 7799
+

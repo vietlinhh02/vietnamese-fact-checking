@@ -325,63 +325,63 @@
     - Convert to DGL format for GNN processing
     - _Requirements: 7.3, 7.4, 7.5, 7.6_
   
-  - [ ] 10.4 Write property test for graph node extraction
+  - [x] 10.4 Write property test for graph node extraction
     - **Property 16: Graph Node Extraction**
     - **Validates: Requirements 7.1**
   
-  - [ ] 10.5 Write property test for graph monotonic growth
+  - [x] 10.5 Write property test for graph monotonic growth
     - **Property 18: Graph Monotonic Growth**
     - **Validates: Requirements 7.3**
   
-  - [ ] 10.6 Write property test for entity uniqueness
+  - [x] 10.6 Write property test for entity uniqueness
     - **Property 19: Entity Uniqueness**
     - **Validates: Requirements 7.4**
   
-  - [ ] 10.7 Write property test for contradiction preservation
+  - [x] 10.7 Write property test for contradiction preservation
     - **Property 20: Contradiction Preservation**
     - **Validates: Requirements 7.5**
 
-- [ ] 11. Implement GNN-based verdict predictor
-  - [ ] 11.1 Design GNN architecture
+- [x] 11. Implement GNN-based verdict predictor
+  - [x] 11.1 Design GNN architecture
     - Implement Graph Convolutional Network (GCN) with 2-3 layers
     - Add node feature initialization (embeddings from XLM-R)
     - Implement message passing and aggregation
     - Add readout layer for claim node representation
     - _Requirements: 8.1, 8.2, 8.3_
   
-  - [ ] 11.2 Train GNN on reasoning graphs
+  - [x] 11.2 Train GNN on reasoning graphs
     - Prepare training data (graphs with ground truth verdicts)
     - Implement training loop with cross-entropy loss
     - Use DGL for efficient graph operations
     - Save best model checkpoint
     - _Requirements: 8.1, 8.2_
   
-  - [ ] 11.3 Implement verdict prediction
+  - [x] 11.3 Implement verdict prediction
     - Extract claim node representation from GNN
     - Apply classifier to predict verdict (Supported/Refuted/NEI)
     - Output confidence scores for each class
     - _Requirements: 8.4, 8.5_
   
-  - [ ] 11.4 Write property test for GNN output format
+  - [x] 11.4 Write property test for GNN output format
     - **Property 21: GNN Output Format**
     - **Validates: Requirements 8.3**
   
-  - [ ] 11.5 Write property test for verdict classification
+  - [x] 11.5 Write property test for verdict classification
     - **Property 22: Verdict Classification**
     - **Validates: Requirements 8.4, 8.5**
 
 - [ ] 12. Checkpoint - Verify reasoning pipeline works
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 13. Build ReAct agent core
-  - [ ] 13.1 Implement LLM controller
+- [x] 13. Build ReAct agent core
+  - [x] 13.1 Implement LLM controller
     - Setup Gemini 1.5 Flash API client (free tier: 15 RPM)
     - Setup Groq API client as alternative (Llama 3.1 70B, free tier: 30 RPM)
     - Implement local Llama 3.1 8B with 4-bit quantization as fallback
     - Add prompt templates for reasoning, action, observation
     - _Requirements: 2.1, 2.2_
   
-  - [ ] 13.2 Implement ReAct loop orchestrator
+  - [x] 13.2 Implement ReAct loop orchestrator
     - Create AgentState class to track reasoning trace and working memory
     - Implement reason() method to generate thoughts
     - Implement act() method to decide on actions
@@ -389,174 +389,174 @@
     - Implement termination logic (max iterations or sufficient evidence)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
   
-  - [ ] 13.3 Implement tool executor
+  - [x] 13.3 Implement tool executor
     - Create Tool interface and concrete implementations (SearchTool (Exa), CrawlTool, CredibilityTool)
     - Implement tool parameter parsing from LLM output
     - Add error handling and retry logic
     - _Requirements: 2.2, 2.3_
   
-  - [ ] 13.4 Write property test for ReAct loop structure
+  - [x] 13.4 Write property test for ReAct loop structure
     - **Property 3: ReAct Loop Structure Invariant**
     - **Validates: Requirements 2.1, 2.2, 2.3, 2.6**
   
-  - [ ] 13.5 Write property test for agent memory monotonicity
+  - [x] 13.5 Write property test for agent memory monotonicity
     - **Property 4: Agent Memory Monotonicity**
     - **Validates: Requirements 2.4**
   
-  - [ ] 13.6 Write property test for evidence collection termination
+  - [x] 13.6 Write property test for evidence collection termination
     - **Property 5: Evidence Collection Termination**
     - **Validates: Requirements 2.5**
 
-- [ ] 14. Implement RAG-based explanation generator
-  - [ ] 14.1 Build evidence retriever
+- [x] 14. Implement RAG-based explanation generator
+  - [x] 14.1 Build evidence retriever
     - Implement relevance scoring for evidence (stance + credibility)
     - Select top-k most relevant evidence pieces
     - Format evidence with source citations
     - _Requirements: 9.1_
   
-  - [ ] 14.2 Implement RAG generation
+  - [x] 14.2 Implement RAG generation
     - Create prompt template with claim, verdict, and evidence
     - Use LLM (Gemini/Groq/Llama) to generate explanation
     - Ensure all facts are grounded in provided evidence
     - Insert inline citations with source URLs
     - _Requirements: 9.1, 9.2, 9.3_
   
-  - [ ] 14.3 Add reasoning trace to explanation
+  - [x] 14.3 Add reasoning trace to explanation
     - Format ReAct loop trace for human readability
     - Include all search queries, actions, and key observations
     - _Requirements: 9.4_
   
-  - [ ] 14.4 Handle contradictory evidence
+  - [x] 14.4 Handle contradictory evidence
     - Detect when both supporting and refuting evidence exist
     - Present both sides with credibility scores
     - Explain uncertainty in verdict
     - _Requirements: 9.5_
   
-  - [ ] 14.5 Write property test for RAG grounding
+  - [x] 14.5 Write property test for RAG grounding
     - **Property 23: RAG Grounding**
     - **Validates: Requirements 9.1**
   
-  - [ ] 14.6 Write property test for citation completeness
+  - [x] 14.6 Write property test for citation completeness
     - **Property 24: Citation Completeness**
     - **Validates: Requirements 9.2**
   
-  - [ ] 14.7 Write property test for reasoning trace inclusion
+  - [x] 14.7 Write property test for reasoning trace inclusion
     - **Property 25: Reasoning Trace Inclusion**
     - **Validates: Requirements 9.4**
   
-  - [ ] 14.8 Write property test for contradiction presentation
+  - [x] 14.8 Write property test for contradiction presentation
     - **Property 26: Contradiction Presentation**
     - **Validates: Requirements 9.5**
 
-- [ ] 15. Implement self-verification module
-  - [ ] 15.1 Build claim extractor for explanations
+- [x] 15. Implement self-verification module
+  - [x] 15.1 Build claim extractor for explanations
     - Parse generated explanation to extract factual claims
     - Use claim detection model or rule-based extraction
     - _Requirements: 10.1_
   
-  - [ ] 15.2 Implement verification loop
+  - [x] 15.2 Implement verification loop
     - For each extracted claim, perform quick search
     - Check if claim is supported by collected evidence
     - Flag unsupported claims as potential hallucinations
     - _Requirements: 10.2, 10.3_
   
-  - [ ] 15.3 Implement quality scoring
+  - [x] 15.3 Implement quality scoring
     - Compute quality score based on verification results
     - Score = (verified_claims / total_claims)
     - Output score with explanation
     - _Requirements: 10.4_
   
-  - [ ] 15.4 Implement hallucination correction
+  - [x] 15.4 Implement hallucination correction
     - Remove or revise claims that fail verification
     - Mark uncertain claims with caveats
     - Regenerate explanation if needed
     - _Requirements: 10.5_
   
-  - [ ] 15.5 Write property test for self-verification execution
+  - [x] 15.5 Write property test for self-verification execution
     - **Property 27: Self-Verification Execution**
     - **Validates: Requirements 10.1, 10.2**
   
-  - [ ] 15.6 Write property test for quality score output
+  - [x] 15.6 Write property test for quality score output
     - **Property 29: Quality Score Output**
     - **Validates: Requirements 10.4**
 
 - [ ] 16. Checkpoint - Verify end-to-end pipeline works
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 17. Build dataset construction pipeline
-  - [ ] 17.1 Implement claim collector
+- [x] 17. Build dataset construction pipeline
+  - [x] 17.1 Implement claim collector
     - Crawl Vietnamese news articles
     - Extract claims using claim detection model
     - Store claims with metadata
     - _Requirements: 11.1_
   
-  - [ ] 17.2 Implement evidence gatherer
+  - [x] 17.2 Implement evidence gatherer
     - For each claim, use ReAct agent to collect evidence
     - Store evidence with credibility scores
     - _Requirements: 11.2_
   
-  - [ ] 17.3 Implement auto-labeling
+  - [x] 17.3 Implement auto-labeling
     - Use full pipeline to generate initial labels
     - Compute confidence scores
     - Flag low-confidence examples for human review
     - _Requirements: 11.3_
   
-  - [ ] 17.4 Create annotation interface (optional)
+  - [x] 17.4 Create annotation interface (optional)
     - Build simple Gradio interface for label verification
     - Allow annotators to correct labels and add notes
     - _Requirements: 11.4_
   
-  - [ ] 17.5 Implement dataset export
+  - [x] 17.5 Implement dataset export
     - Export to JSONL format with all required fields
     - Include claim, evidence list, label, metadata
     - Split into train/val/test sets
     - _Requirements: 11.5_
   
-  - [ ] 17.6 Write property test for dataset evidence association
+  - [x] 17.6 Write property test for dataset evidence association
     - **Property 31: Dataset Evidence Association**
     - **Validates: Requirements 11.2**
   
-  - [ ] 17.7 Write property test for dataset schema compliance
+  - [x] 17.7 Write property test for dataset schema compliance
     - **Property 32: Dataset Schema Compliance**
     - **Validates: Requirements 11.5**
 
-- [ ] 18. Implement evaluation and comparison framework
-  - [ ] 18.1 Build evaluation pipeline
+- [x] 18. Implement evaluation and comparison framework
+  - [x] 18.1 Build evaluation pipeline
     - Load test dataset
     - Run full pipeline on each claim
     - Compute metrics (Accuracy, Precision, Recall, F1)
     - Generate detailed performance report
     - _Requirements: 13.1_
   
-  - [ ] 18.2 Implement ablation study support
+  - [x] 18.2 Implement ablation study support
     - Add configuration flags to enable/disable components
     - Run experiments with different configurations
     - Compare performance across configurations
     - _Requirements: 13.2_
   
-  - [ ] 18.3 Add statistical significance testing
+  - [x] 18.3 Add statistical significance testing
     - Implement paired t-test and McNemar's test
     - Compute p-values for method comparisons
     - Include in performance reports
     - _Requirements: 13.3_
   
-  - [ ] 18.4 Create visualization tools
+  - [x] 18.4 Create visualization tools
     - Generate plots (confusion matrix, precision-recall curves)
     - Create tables for paper publication
     - Export results in LaTeX format
     - _Requirements: 13.4_
   
-  - [ ] 18.5 Implement experiment tracking
+  - [x] 18.5 Implement experiment tracking
     - Log all hyperparameters and random seeds
     - Save complete configuration for reproducibility
     - Track experiments in SQLite database
     - _Requirements: 13.5_
   
-  - [ ] 18.6 Write property test for evaluation metrics completeness
+  - [x] 18.6 Write property test for evaluation metrics completeness
     - **Property 35: Evaluation Metrics Completeness**
     - **Validates: Requirements 13.1**
   
-  - [ ] 18.7 Write property test for experiment reproducibility
+  - [x] 18.7 Write property test for experiment reproducibility
     - **Property 38: Experiment Reproducibility**
     - **Validates: Requirements 13.5**
 

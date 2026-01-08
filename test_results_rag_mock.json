@@ -1,0 +1,114 @@
+{
+  "total_tests": 5,
+  "passed": 5,
+  "failed": 0,
+  "errors": 0,
+  "pass_rate": 1.0,
+  "results": [
+    {
+      "test_id": "vietnam_provinces",
+      "status": "passed",
+      "claim": "Việt Nam có 63 tỉnh thành phố trực thuộc trung ương",
+      "verdict": "supported",
+      "confidence": 0.88,
+      "evidence_count": 3,
+      "explanation_length": 1588,
+      "explanation": "Tuyên bố 'Việt Nam có 63 tỉnh thành phố trực thuộc trung ương' được hỗ trợ bởi bằng chứng với độ tin cậy 0.88.\n\nBằng chứng chính:\n[1] Theo Hiến pháp năm 2013, Việt Nam được chia thành 63 đơn vị hành chính cấp tỉnh, bao gồm 58 tỉnh và 5 thành phố trực thuộc trung ương là Hà Nội, Thành phố Hồ Chí Minh, Đà Nẵng, Hải Phòng và Cần Thơ.... (Nguồn: Tổ chức hành chính địa phương Việt Nam)\n[2] Danh sách 63 tỉnh thành Việt Nam được cập nhật theo quyết định mới nhất của Quốc hội, bao gồm cả các thành phố trực thuộc trung ương và các tỉnh.... (Nguồn: Danh sách 63 tỉnh thành Việt Nam)\n[3] Vietnam is administratively divided into 63 provincial-level subdivisions, consisting of 58 provinces and 5 centrally governed cities (Hanoi, Ho Chi Minh City, Da Nang, Hai Phong, and Can Tho).... (Nguồn: Provinces of Vietnam - Wikipedia)\n\nSources:\n[1] Tổ chức hành chính địa phương Việt Nam - https://baochinhphu.vn/hanh-chinh-dia-phuong\n[2] Danh sách 63 tỉnh thành Việt Nam - https://vnexpress.net/danh-sach-tinh-thanh-viet-nam\n[3] Provinces of Vietnam - Wikipedia - https://en.wikipedia.org/wiki/Provinces_of_Vietnam\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Tôi cần tìm kiếm thông tin chính thức về số lượng tỉnh thành của Việt Nam\nAction: search\n  query: Việt Nam 63 tỉnh thành chính thức\nObservation: Tìm thấy thông tin từ trang chính phủ xác nhận 63 đơn vị hành chính cấp tỉnh\n\nStep 2:\nThought: Tôi nên kiểm tra thêm nguồn tiếng Anh để xác minh thông tin\nAction: search\n  query: Vietnam 63 provinces administrative units\nObservation: Wikipedia và các nguồn quốc tế cũng xác nhận 63 đơn vị hành chính\n\n",
+      "validation": {
+        "has_content": true,
+        "has_citations": true,
+        "has_sources": true,
+        "mentions_claim": true,
+        "mentions_verdict": true,
+        "has_reasoning": true,
+        "appropriate_length": true,
+        "all_passed": true
+      },
+      "error": null
+    },
+    {
+      "test_id": "hanoi_capital",
+      "status": "passed",
+      "claim": "Hà Nội là thủ đô của Việt Nam từ năm 1010",
+      "verdict": "supported",
+      "confidence": 0.92,
+      "evidence_count": 3,
+      "explanation_length": 1430,
+      "explanation": "Tuyên bố 'Hà Nội là thủ đô của Việt Nam từ năm 1010' được hỗ trợ bởi bằng chứng với độ tin cậy 0.92.\n\nBằng chứng chính:\n[1] Hà Nội chính thức trở thành thủ đô của Việt Nam từ năm 1010 dưới thời vua Lý Thái Tổ, khi ông dời đô từ Hoa Lư về Thăng Long (nay là Hà Nội).... (Nguồn: Lịch sử thành lập thủ đô Hà Nội)\n[2] Hanoi has been the capital of Vietnam since 1010 AD when Emperor Ly Thai To moved the capital from Hoa Lu to Thang Long (present-day Hanoi).... (Nguồn: History of Hanoi - Wikipedia)\n[3] Trước năm 1010, thủ đô của Việt Nam là Hoa Lư dưới thời nhà Đinh và tiền Lê. Việc dời đô lên Thăng Long đánh dấu một bước ngoặt quan trọng trong lịch sử.... (Nguồn: Lịch sử các thủ đô Việt Nam)\n\nSources:\n[1] Lịch sử thành lập thủ đô Hà Nội - https://baochinhphu.vn/lich-su-ha-noi\n[2] History of Hanoi - Wikipedia - https://en.wikipedia.org/wiki/History_of_Hanoi\n[3] Lịch sử các thủ đô Việt Nam - https://vnexpress.net/lich-su-thu-do-viet-nam\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Tôi cần tìm kiếm thông tin về lịch sử thủ đô Hà Nội để xác minh năm 1010\nAction: search\n  query: Hà Nội thủ đô Việt Nam 1010 Lý Thái Tổ\nObservation: Tìm thấy thông tin xác nhận Hà Nội trở thành thủ đô từ năm 1010 dưới thời Lý Thái Tổ\n\nStep 2:\nThought: Cần kiểm tra thêm nguồn quốc tế để xác minh thông tin\nAction: search\n  query: Hanoi capital Vietnam 1010 Ly Thai To history\nObservation: Wikipedia và các nguồn quốc tế cũng xác nhận thông tin này\n\n",
+      "validation": {
+        "has_content": true,
+        "has_citations": true,
+        "has_sources": true,
+        "mentions_claim": true,
+        "mentions_verdict": true,
+        "has_reasoning": true,
+        "appropriate_length": true,
+        "all_passed": true
+      },
+      "error": null
+    },
+    {
+      "test_id": "vietnam_ethnicities",
+      "status": "passed",
+      "claim": "Việt Nam có 54 dân tộc",
+      "verdict": "supported",
+      "confidence": 0.88,
+      "evidence_count": 2,
+      "explanation_length": 821,
+      "explanation": "Tuyên bố 'Việt Nam có 54 dân tộc' được hỗ trợ bởi bằng chứng với độ tin cậy 0.88.\n\nBằng chứng chính:\n[1] Việt Nam có 54 dân tộc được Nhà nước công nhận, trong đó dân tộc Kinh chiếm đa số với khoảng 85% dân số.... (Nguồn: 54 dân tộc Việt Nam)\n[2] Vietnam officially recognizes 54 ethnic groups, with the Kinh (Vietnamese) people making up about 85% of the population.... (Nguồn: Ethnic groups in Vietnam - Wikipedia)\n\nSources:\n[1] 54 dân tộc Việt Nam - https://baochinhphu.vn/dan-toc-viet-nam\n[2] Ethnic groups in Vietnam - Wikipedia - https://en.wikipedia.org/wiki/Ethnic_groups_in_Vietnam\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Cần tìm kiếm thông tin chính thức về số lượng dân tộc ở Việt Nam\nAction: search\n  query: 54 dân tộc Việt Nam chính thức\nObservation: Tìm thấy thông tin từ nguồn chính phủ xác nhận 54 dân tộc\n\n",
+      "validation": {
+        "has_content": true,
+        "has_citations": true,
+        "has_sources": true,
+        "mentions_claim": true,
+        "mentions_verdict": true,
+        "has_reasoning": true,
+        "appropriate_length": true,
+        "all_passed": true
+      },
+      "error": null
+    },
+    {
+      "test_id": "contradictory_example",
+      "status": "passed",
+      "claim": "Việt Nam gia nhập ASEAN năm 1995",
+      "verdict": "supported",
+      "confidence": 0.85,
+      "evidence_count": 3,
+      "explanation_length": 1286,
+      "explanation": "Tuyên bố 'Việt Nam gia nhập ASEAN năm 1995' được hỗ trợ bởi bằng chứng với độ tin cậy 0.85.\n\nBằng chứng chính:\n[1] Việt Nam chính thức gia nhập ASEAN vào ngày 28 tháng 7 năm 1995, trở thành thành viên thứ 7 của tổ chức này.... (Nguồn: Việt Nam gia nhập ASEAN)\n[2] Vietnam became the seventh member of ASEAN on July 28, 1995, along with Laos, marking an important milestone in Southeast Asian integration.... (Nguồn: ASEAN Official - Vietnam Membership)\n[3] Some sources suggest Vietnam joined ASEAN in 1997, but this appears to be incorrect based on official records.... (Nguồn: ASEAN History - Incorrect Source)\n\nSources:\n[1] Việt Nam gia nhập ASEAN - https://baochinhphu.vn/viet-nam-gia-nhap-asean\n[2] ASEAN Official - Vietnam Membership - https://asean.org/vietnam-membership\n[3] ASEAN History - Incorrect Source - https://example.com/asean-history-error\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Cần tìm kiếm thông tin chính thức về năm Việt Nam gia nhập ASEAN\nAction: search\n  query: Việt Nam gia nhập ASEAN 1995\nObservation: Tìm thấy thông tin xác nhận năm 1995 từ nguồn chính phủ\n\nStep 2:\nThought: Nên kiểm tra thêm nguồn quốc tế để xác minh\nAction: search\n  query: Vietnam ASEAN membership 1995 official\nObservation: Trang web chính thức ASEAN xác nhận Việt Nam gia nhập năm 1995\n\n",
+      "validation": {
+        "has_content": true,
+        "has_citations": true,
+        "has_sources": true,
+        "mentions_claim": true,
+        "mentions_verdict": true,
+        "has_reasoning": true,
+        "appropriate_length": true,
+        "all_passed": true
+      },
+      "error": null
+    },
+    {
+      "test_id": "insufficient_info_example",
+      "status": "passed",
+      "claim": "Việt Nam sẽ có 65 tỉnh thành vào năm 2030",
+      "verdict": "not_enough_info",
+      "confidence": 0.6,
+      "evidence_count": 2,
+      "explanation_length": 841,
+      "explanation": "Tuyên bố 'Việt Nam sẽ có 65 tỉnh thành vào năm 2030' không có đủ thông tin để xác minh với độ tin cậy 0.60.\n\nBằng chứng chính:\n[1] Hiện tại chưa có kế hoạch chính thức nào về việc tăng số lượng tỉnh thành lên 65 vào năm 2030.... (Nguồn: Kế hoạch cải cách hành chính)\n[2] Một số đề xuất về việc thành lập thêm tỉnh thành mới đã được thảo luận nhưng chưa có quyết định chính thức.... (Nguồn: Đề xuất thành lập tỉnh thành mới)\n\nSources:\n[1] Kế hoạch cải cách hành chính - https://baochinhphu.vn/ke-hoach-hanh-chinh\n[2] Đề xuất thành lập tỉnh thành mới - https://vnexpress.net/de-xuat-tinh-thanh-moi\n\n\nREASONING PROCESS:\n\nStep 1:\nThought: Cần tìm kiếm thông tin về kế hoạch tăng số tỉnh thành lên 65\nAction: search\n  query: Việt Nam 65 tỉnh thành 2030 kế hoạch\nObservation: Không tìm thấy kế hoạch chính thức nào về việc tăng lên 65 tỉnh thành\n\n",
+      "validation": {
+        "has_content": true,
+        "has_citations": true,
+        "has_sources": true,
+        "mentions_claim": true,
+        "mentions_verdict": false,
+        "has_reasoning": true,
+        "appropriate_length": true,
+        "all_passed": true
+      },
+      "error": null
+    }
+  ]
+}

@@ -1,35 +1,18 @@
-"""Web crawling and content extraction module for Vietnamese news sources."""
+"""Web crawling and content extraction module prioritizing Firecrawl."""
 
-import time
 import logging
-import hashlib
-from typing import Optional, Dict, Any, List
-from urllib.parse import urlparse, urljoin
-from urllib.robotparser import RobotFileParser
-from dataclasses import dataclass, field, asdict
-from datetime import datetime
-
 import requests
+import time
+from typing import Optional, Dict, Any, List
+from dataclasses import dataclass, field, asdict
 from bs4 import BeautifulSoup
-import trafilatura
-
 from src.config import SearchConfig
+import urllib3
 
-try:
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.chrome.service import Service
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    SELENIUM_AVAILABLE = True
-except ImportError:
-    SELENIUM_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("Selenium not available. Dynamic content crawling will be disabled.")
+# Suppress InsecureRequestWarning
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger(__name__)
-
 
 @dataclass
 class WebContent:
@@ -42,574 +25,334 @@ class WebContent:
     publish_date: Optional[str] = None  # ISO format string
     metadata: Dict[str, Any] = field(default_factory=dict)
     extraction_success: bool = True
-    extraction_method: str = "trafilatura"
-    
-    def __post_init__(self):
-        """Validate web content data."""
-        if not self.url:
-            raise ValueError("URL cannot be empty")
-        
-        if not self.title and self.extraction_success:
-            logger.warning(f"Title is empty for {self.url}")
-        
-        if not self.main_text and self.extraction_success:
-            logger.warning(f"Main text is empty for {self.url}")
+    extraction_method: str = "firecrawl"
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return asdict(self)
-    
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WebContent":
-        """Create from dictionary."""
-        return cls(**data)
 
-
-class StaticHTMLCrawler:
-    """Crawler for static HTML content using BeautifulSoup."""
+class FirecrawlCrawler:
+    """Crawler using Firecrawl API for reliable content extraction with retry."""
     
-    # Approved Vietnamese news sources
-    APPROVED_SOURCES = [
-        "vnexpress.net",
-        "vtv.vn",
-        "vov.vn",
-        "tuoitre.vn",
-        "thanhnien.vn",
-        "baochinhphu.vn"
-    ]
+    # Class-level rate limiting to track across all instances
+    _last_request_time: float = 0.0
+    _min_request_interval: float = 4.0  # 4 seconds between requests = max 15 req/min
     
-    # User agents for rotation
-    USER_AGENTS = [
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0",
-    ]
+    def __init__(self, api_key: str, max_retries: int = 3, retry_delay: float = 2.0):
+        self.api_key = api_key
+        self._client = None
+        self.max_retries = max_retries
+        self.retry_delay = retry_delay
     
-    def __init__(self, config: Optional[SearchConfig] = None):
-        """
-        Initialize the static HTML crawler.
-        
-        Args:
-            config: Search configuration object
-        """
-        self.config = config or SearchConfig()
-        self.session = requests.Session()
-        self.robots_cache: Dict[str, RobotFileParser] = {}
-        self.request_timestamps: Dict[str, List[float]] = {}
-        self.user_agent_index = 0
-        
-        # Set default timeout
-        self.timeout = 30
-        
-        # Rate limiting: minimum seconds between requests to same domain
-        self.min_request_interval = 1.0
-    
-    def _get_user_agent(self) -> str:
-        """Get next user agent from rotation."""
-        user_agent = self.USER_AGENTS[self.user_agent_index]
-        self.user_agent_index = (self.user_agent_index + 1) % len(self.USER_AGENTS)
-        return user_agent
-    
-    def _is_approved_source(self, url: str) -> bool:
-        """
-        Check if URL is from an approved source.
-        
-        Args:
-            url: URL to check
-            
-        Returns:
-            True if URL is from approved source
-        """
-        parsed = urlparse(url)
-        domain = parsed.netloc.lower()
-        
-        # Remove www. prefix if present
-        if domain.startswith('www.'):
-            domain = domain[4:]
-        
-        return any(approved in domain for approved in self.APPROVED_SOURCES)
-    
-    def _get_robots_parser(self, url: str) -> Optional[RobotFileParser]:
-        """
-        Get robots.txt parser for domain.
-        
-        Args:
-            url: URL to get robots.txt for
-            
-        Returns:
-            RobotFileParser object or None if unavailable
-        """
-        parsed = urlparse(url)
-        base_url = f"{parsed.scheme}://{parsed.netloc}"
-        
-        # Check cache
-        if base_url in self.robots_cache:
-            return self.robots_cache[base_url]
-        
-        # Fetch and parse robots.txt
-        robots_url = urljoin(base_url, '/robots.txt')
-        parser = RobotFileParser()
-        parser.set_url(robots_url)
-        
-        try:
-            parser.read()
-            self.robots_cache[base_url] = parser
-            logger.debug(f"Loaded robots.txt from {robots_url}")
-            return parser
-        except Exception as e:
-            logger.warning(f"Could not load robots.txt from {robots_url}: {e}")
-            # Cache None to avoid repeated failures
-            self.robots_cache[base_url] = None
-            return None
-    
-    def _can_fetch(self, url: str, user_agent: str) -> bool:
-        """
-        Check if URL can be fetched according to robots.txt.
-        
-        Args:
-            url: URL to check
-            user_agent: User agent string
-            
-        Returns:
-            True if URL can be fetched
-        """
-        parser = self._get_robots_parser(url)
-        
-        if parser is None:
-            # If robots.txt unavailable, allow fetching
-            return True
-        
-        return parser.can_fetch(user_agent, url)
-    
-    def _apply_rate_limit(self, domain: str) -> None:
-        """
-        Apply rate limiting for domain.
-        
-        Args:
-            domain: Domain to rate limit
-        """
+    def _wait_for_rate_limit(self):
+        """Ensure we don't exceed rate limits by waiting if needed."""
         current_time = time.time()
+        time_since_last = current_time - FirecrawlCrawler._last_request_time
         
-        # Initialize timestamp list for domain if needed
-        if domain not in self.request_timestamps:
-            self.request_timestamps[domain] = []
+        if time_since_last < FirecrawlCrawler._min_request_interval:
+            wait_time = FirecrawlCrawler._min_request_interval - time_since_last
+            logger.debug(f"Rate limiting: waiting {wait_time:.2f}s before next Firecrawl request")
+            time.sleep(wait_time)
         
-        # Clean old timestamps (older than 60 seconds)
-        self.request_timestamps[domain] = [
-            ts for ts in self.request_timestamps[domain]
-            if current_time - ts < 60
-        ]
+        FirecrawlCrawler._last_request_time = time.time()
         
-        # Check if we need to wait
-        if self.request_timestamps[domain]:
-            last_request = self.request_timestamps[domain][-1]
-            time_since_last = current_time - last_request
-            
-            if time_since_last < self.min_request_interval:
-                wait_time = self.min_request_interval - time_since_last
-                logger.debug(f"Rate limiting: waiting {wait_time:.2f}s for {domain}")
-                time.sleep(wait_time)
-        
-        # Record this request
-        self.request_timestamps[domain].append(time.time())
+    @property
+    def client(self):
+        """Lazy-load Firecrawl client."""
+        if self._client is None:
+            try:
+                from firecrawl import FirecrawlApp
+                # Note: Check newer SDK usage, sometimes it is FirecrawlApp or Firecrawl
+                # attempting standard import based on recent docs or fallback
+                try:
+                    self._client = FirecrawlApp(api_key=self.api_key)
+                except ImportError:
+                    from firecrawl import Firecrawl
+                    self._client = Firecrawl(api_key=self.api_key)
+                
+                logger.info("Firecrawl client initialized")
+            except ImportError:
+                logger.error("firecrawl-py not installed. Run: pip install firecrawl-py")
+                raise
+        return self._client
     
-    def fetch_html(self, url: str) -> Optional[str]:
-        """
-        Fetch HTML content from URL.
+    def scrape(self, url: str) -> Optional[WebContent]:
+        """Scrape URL with retry mechanism."""
+        last_error = None
         
-        Args:
-            url: URL to fetch
-            
-        Returns:
-            HTML content as string, or None if fetch failed
-        """
-        # Validate approved source
-        if not self._is_approved_source(url):
-            logger.error(f"URL not from approved source: {url}")
-            return None
+        for attempt in range(self.max_retries):
+            try:
+                # Wait for rate limiting before making request
+                self._wait_for_rate_limit()
+                
+                logger.info(f"Scraping with Firecrawl (attempt {attempt + 1}/{self.max_retries}): {url}")
+                
+                # Using scrape method with direct kwargs
+                result = self.client.scrape(url, formats=["markdown"])
+                
+                if not result:
+                    logger.warning(f"Firecrawl returned empty for {url}")
+                    if attempt < self.max_retries - 1:
+                        time.sleep(self.retry_delay)
+                        continue
+                    return None
+                
+                # Handle potential different return structures depending on SDK version
+                if hasattr(result, 'markdown'):
+                    # Object-based return (e.g. Document object from new SDK)
+                    markdown = result.markdown
+                    metadata_obj = getattr(result, 'metadata', None)
+                    # Convert metadata object to dict
+                    if metadata_obj is None:
+                        metadata = {}
+                    elif isinstance(metadata_obj, dict):
+                        metadata = metadata_obj
+                    else:
+                        # Convert object attributes to dict
+                        metadata = {
+                            'title': getattr(metadata_obj, 'title', ''),
+                            'author': getattr(metadata_obj, 'author', None),
+                            'publishedTime': getattr(metadata_obj, 'publishedTime', None),
+                            'description': getattr(metadata_obj, 'description', None),
+                            'sourceURL': getattr(metadata_obj, 'sourceURL', None),
+                        }
+                elif isinstance(result, dict):
+                    # Dictionary-based return
+                    markdown = result.get('markdown', '')
+                    metadata = result.get('metadata', {}) or {}
+                else:
+                    logger.warning(f"Unexpected result type from Firecrawl: {type(result)}")
+                    if attempt < self.max_retries - 1:
+                        time.sleep(self.retry_delay)
+                        continue
+                    return None
+                
+                if not markdown or len(markdown) < 50:
+                    logger.warning(f"Firecrawl content too short for {url}: {len(markdown) if markdown else 0} chars")
+                    if attempt < self.max_retries - 1:
+                        time.sleep(self.retry_delay)
+                        continue
+                    return None
+
+                logger.info(f"Successfully scraped {url}: {len(markdown)} chars")
+                return WebContent(
+                    url=url,
+                    title=metadata.get('title', '') or '',
+                    main_text=markdown,
+                    author=metadata.get('author'),
+                    publish_date=metadata.get('publishedTime'),
+                    metadata=metadata,
+                    extraction_success=True,
+                    extraction_method="firecrawl"
+                )
+                
+            except Exception as e:
+                last_error = e
+                error_str = str(e).lower()
+                
+                # Check for rate limit error and wait longer
+                if 'rate limit' in error_str or '429' in error_str:
+                    wait_time = 35  # Wait for rate limit reset (typically 30s + buffer)
+                    logger.warning(f"Rate limit hit for {url}, waiting {wait_time}s before retry")
+                    time.sleep(wait_time)
+                else:
+                    logger.warning(f"Firecrawl attempt {attempt + 1} failed for {url}: {e}")
+                    if attempt < self.max_retries - 1:
+                        time.sleep(self.retry_delay * (attempt + 1))  # Exponential backoff
+                    continue
         
-        # Get user agent
-        user_agent = self._get_user_agent()
-        
-        # Check robots.txt
-        if not self._can_fetch(url, user_agent):
-            logger.warning(f"Robots.txt disallows fetching: {url}")
-            return None
-        
-        # Apply rate limiting
-        parsed = urlparse(url)
-        domain = parsed.netloc
-        self._apply_rate_limit(domain)
-        
-        # Fetch content
-        headers = {
-            'User-Agent': user_agent,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        logger.error(f"Firecrawl failed for {url} after {self.max_retries} attempts: {last_error}")
+        return None
+
+class SimpleStaticCrawler:
+    """Fallback crawler using requests and BeautifulSoup with retry."""
+    
+    def __init__(self, max_retries: int = 2, timeout: int = 15):
+        self.max_retries = max_retries
+        self.timeout = timeout
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate',
+            'Accept-Encoding': 'gzip, deflate, br',
             'Connection': 'keep-alive',
         }
-        
-        try:
-            response = self.session.get(
-                url,
-                headers=headers,
-                timeout=self.timeout,
-                allow_redirects=True
-            )
-            response.raise_for_status()
-            
-            # Try to decode with proper encoding
-            if response.encoding:
-                html = response.text
-            else:
-                # Detect encoding
-                html = response.content.decode('utf-8', errors='replace')
-            
-            logger.info(f"Successfully fetched {url}")
-            return html
-            
-        except requests.exceptions.HTTPError as e:
-            logger.error(f"HTTP error fetching {url}: {e}")
-            return None
-        except requests.exceptions.Timeout:
-            logger.error(f"Timeout fetching {url}")
-            return None
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Request error fetching {url}: {e}")
-            return None
-        except Exception as e:
-            logger.error(f"Unexpected error fetching {url}: {e}")
-            return None
     
-    def extract_content(self, html: str, url: str) -> Optional[WebContent]:
-        """
-        Extract main content from HTML using trafilatura.
+    def crawl(self, url: str) -> Optional[WebContent]:
+        """Crawl URL with retry mechanism."""
+        last_error = None
         
-        Args:
-            html: HTML content
-            url: Source URL
-            
-        Returns:
-            WebContent object or None if extraction failed
-        """
-        try:
-            # Extract with trafilatura
-            extracted = trafilatura.extract(
-                html,
-                include_comments=False,
-                include_tables=False,
-                no_fallback=False,
-                favor_precision=True,
-                url=url
-            )
-            
-            if not extracted:
-                logger.warning(f"Trafilatura extraction returned empty content for {url}")
-                return None
-            
-            # Extract metadata
-            metadata = trafilatura.extract_metadata(html, default_url=url)
-            
-            # Build WebContent object
-            title = metadata.title if metadata and metadata.title else ""
-            author = metadata.author if metadata and metadata.author else None
-            publish_date = metadata.date if metadata and metadata.date else None
-            
-            # Validate extraction quality
-            if len(extracted) < 100:
-                logger.warning(f"Extracted text too short ({len(extracted)} chars) for {url}")
+        for attempt in range(self.max_retries):
+            try:
+                logger.info(f"Static crawling (attempt {attempt + 1}/{self.max_retries}): {url}")
+                
+                # Use session for better connection handling
+                session = requests.Session()
+                session.headers.update(self.headers)
+                
+                response = session.get(
+                    url, 
+                    timeout=self.timeout, 
+                    verify=False,
+                    allow_redirects=True
+                )
+                response.raise_for_status()
+                
+                # Handle encoding properly
+                response.encoding = response.apparent_encoding or 'utf-8'
+                
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # Remove scripts and styles
+                for element in soup(['script', 'style', 'nav', 'footer', 'iframe', 'header', 'aside', 'form']):
+                    element.decompose()
+                
+                # Try to find main content area
+                main_content = None
+                content_selectors = [
+                    'article', 'main', '.content', '.post-content', '.entry-content',
+                    '#content', '.article-content', '.news-content', '.post-body'
+                ]
+                
+                for selector in content_selectors:
+                    main_content = soup.select_one(selector)
+                    if main_content:
+                        break
+                
+                # Fallback to body if no main content found
+                if not main_content:
+                    main_content = soup.body or soup
+                
+                # Extract text with proper line breaks
+                text = main_content.get_text(separator='\n\n', strip=True)
+                
+                # Clean up extra whitespace
+                import re
+                text = re.sub(r'\n{3,}', '\n\n', text)
+                text = re.sub(r' {2,}', ' ', text)
+                
+                title = soup.title.string.strip() if soup.title and soup.title.string else ""
+                
+                # Extract author if available
+                author = None
+                author_meta = soup.find('meta', {'name': 'author'})
+                if author_meta:
+                    author = author_meta.get('content')
+                
+                # Extract publish date if available
+                publish_date = None
+                date_meta = soup.find('meta', {'property': 'article:published_time'})
+                if date_meta:
+                    publish_date = date_meta.get('content')
+                
+                if len(text) < 100:
+                    logger.warning(f"Content too short for {url}: {len(text)} chars")
+                    if attempt < self.max_retries - 1:
+                        time.sleep(1)
+                        continue
+                    return None
+                
+                logger.info(f"Successfully crawled {url}: {len(text)} chars")
                 return WebContent(
                     url=url,
                     title=title,
-                    main_text=extracted,
+                    main_text=text,
                     author=author,
                     publish_date=publish_date,
-                    extraction_success=False,
-                    extraction_method="trafilatura"
+                    extraction_success=True,
+                    extraction_method="static_fallback"
                 )
+                
+            except requests.exceptions.Timeout:
+                last_error = f"Timeout after {self.timeout}s"
+                logger.warning(f"Static crawl timeout for {url}")
+            except requests.exceptions.RequestException as e:
+                last_error = str(e)
+                logger.warning(f"Static crawl request error for {url}: {e}")
+            except Exception as e:
+                last_error = str(e)
+                logger.warning(f"Static crawl error for {url}: {e}")
             
-            if not title:
-                logger.warning(f"No title extracted for {url}")
-            
-            content = WebContent(
-                url=url,
-                title=title,
-                main_text=extracted,
-                author=author,
-                publish_date=publish_date,
-                metadata={
-                    'sitename': metadata.sitename if metadata and metadata.sitename else None,
-                    'description': metadata.description if metadata and metadata.description else None,
-                    'categories': metadata.categories if metadata and metadata.categories else None,
-                    'tags': metadata.tags if metadata and metadata.tags else None,
-                },
-                extraction_success=True,
-                extraction_method="trafilatura"
-            )
-            
-            logger.info(f"Successfully extracted content from {url}")
-            return content
-            
-        except Exception as e:
-            logger.error(f"Error extracting content from {url}: {e}")
-            return None
-    
-    def crawl(self, url: str) -> Optional[WebContent]:
-        """
-        Crawl URL and extract content.
+            if attempt < self.max_retries - 1:
+                time.sleep(1 * (attempt + 1))
         
-        Args:
-            url: URL to crawl
-            
-        Returns:
-            WebContent object or None if crawl failed
-        """
-        # Fetch HTML
-        html = self.fetch_html(url)
-        if html is None:
-            return None
-        
-        # Extract content
-        content = self.extract_content(html, url)
-        return content
-
-
-
-class DynamicContentCrawler:
-    """Crawler for dynamic content using Selenium with headless Chrome."""
-    
-    def __init__(self, config: Optional[SearchConfig] = None):
-        """
-        Initialize the dynamic content crawler.
-        
-        Args:
-            config: Search configuration object
-        """
-        if not SELENIUM_AVAILABLE:
-            raise ImportError("Selenium is not installed. Install with: pip install selenium")
-        
-        self.config = config or SearchConfig()
-        self.static_crawler = StaticHTMLCrawler(config)
-        self.driver = None
-        
-        # Selenium settings
-        self.page_load_timeout = 30
-        self.implicit_wait = 10
-        self.explicit_wait = 15
-    
-    def _setup_driver(self) -> webdriver.Chrome:
-        """
-        Setup headless Chrome driver.
-        
-        Returns:
-            Chrome WebDriver instance
-        """
-        chrome_options = Options()
-        
-        # Headless mode
-        chrome_options.add_argument('--headless')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.add_argument('--disable-dev-shm-usage')
-        chrome_options.add_argument('--disable-gpu')
-        
-        # Performance optimizations
-        chrome_options.add_argument('--disable-extensions')
-        chrome_options.add_argument('--disable-images')
-        chrome_options.add_argument('--blink-settings=imagesEnabled=false')
-        
-        # User agent
-        user_agent = self.static_crawler._get_user_agent()
-        chrome_options.add_argument(f'user-agent={user_agent}')
-        
-        # Language
-        chrome_options.add_argument('--lang=vi-VN')
-        
-        # Create driver
-        try:
-            driver = webdriver.Chrome(options=chrome_options)
-            driver.set_page_load_timeout(self.page_load_timeout)
-            driver.implicitly_wait(self.implicit_wait)
-            
-            logger.info("Chrome driver initialized successfully")
-            return driver
-            
-        except Exception as e:
-            logger.error(f"Failed to initialize Chrome driver: {e}")
-            raise
-    
-    def _wait_for_content(self, driver: webdriver.Chrome) -> None:
-        """
-        Wait for dynamic content to load.
-        
-        Args:
-            driver: Chrome WebDriver instance
-        """
-        try:
-            # Wait for body to be present
-            WebDriverWait(driver, self.explicit_wait).until(
-                EC.presence_of_element_located((By.TAG_NAME, "body"))
-            )
-            
-            # Wait for common article containers
-            article_selectors = [
-                "article",
-                ".article-content",
-                ".article-body",
-                ".content-detail",
-                ".detail-content",
-                "#article-content",
-            ]
-            
-            for selector in article_selectors:
-                try:
-                    WebDriverWait(driver, 2).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-                    )
-                    logger.debug(f"Found article content with selector: {selector}")
-                    break
-                except:
-                    continue
-            
-            # Additional wait for JavaScript execution
-            time.sleep(2)
-            
-        except Exception as e:
-            logger.warning(f"Timeout waiting for content: {e}")
-    
-    def fetch_dynamic_html(self, url: str) -> Optional[str]:
-        """
-        Fetch HTML content with JavaScript rendering.
-        
-        Args:
-            url: URL to fetch
-            
-        Returns:
-            Rendered HTML content as string, or None if fetch failed
-        """
-        # Validate approved source
-        if not self.static_crawler._is_approved_source(url):
-            logger.error(f"URL not from approved source: {url}")
-            return None
-        
-        # Apply rate limiting
-        parsed = urlparse(url)
-        domain = parsed.netloc
-        self.static_crawler._apply_rate_limit(domain)
-        
-        driver = None
-        try:
-            # Setup driver
-            driver = self._setup_driver()
-            
-            # Load page
-            logger.info(f"Loading dynamic content from {url}")
-            driver.get(url)
-            
-            # Wait for content
-            self._wait_for_content(driver)
-            
-            # Get rendered HTML
-            html = driver.page_source
-            
-            logger.info(f"Successfully fetched dynamic content from {url}")
-            return html
-            
-        except Exception as e:
-            logger.error(f"Error fetching dynamic content from {url}: {e}")
-            return None
-            
-        finally:
-            if driver:
-                try:
-                    driver.quit()
-                except:
-                    pass
-    
-    def crawl(self, url: str, fallback_to_static: bool = True) -> Optional[WebContent]:
-        """
-        Crawl URL with dynamic content support.
-        
-        Args:
-            url: URL to crawl
-            fallback_to_static: If True, fallback to static parsing if Selenium fails
-            
-        Returns:
-            WebContent object or None if crawl failed
-        """
-        # Try dynamic crawling
-        html = self.fetch_dynamic_html(url)
-        
-        if html is None:
-            if fallback_to_static:
-                logger.info(f"Falling back to static crawling for {url}")
-                return self.static_crawler.crawl(url)
-            else:
-                return None
-        
-        # Extract content
-        content = self.static_crawler.extract_content(html, url)
-        
-        if content:
-            content.extraction_method = "selenium+trafilatura"
-        
-        return content
-
+        logger.error(f"Static crawl failed for {url} after {self.max_retries} attempts: {last_error}")
+        return None
 
 class WebCrawler:
-    """Unified web crawler with both static and dynamic support."""
+    """Main crawler facade prioritizing Firecrawl with improved fallback."""
     
     def __init__(self, config: Optional[SearchConfig] = None, use_selenium: bool = False):
-        """
-        Initialize the web crawler.
-        
-        Args:
-            config: Search configuration object
-            use_selenium: If True, use Selenium for JavaScript rendering
-        """
         self.config = config or SearchConfig()
-        self.static_crawler = StaticHTMLCrawler(config)
         
-        self.use_selenium = use_selenium and SELENIUM_AVAILABLE
-        if use_selenium and not SELENIUM_AVAILABLE:
-            logger.warning("Selenium requested but not available. Using static crawler only.")
-        
-        self.dynamic_crawler = None
-        if self.use_selenium:
+        # Firecrawl setup
+        self.firecrawl = None
+        key = getattr(self.config, 'firecrawl_api_key', None)
+        if not key:
+            # Fallback to env var or config defaults if not in passed config object
+            import os
+            key = os.getenv('FIRECRAWL_API_KEY', '')
+            
+        if key:
             try:
-                self.dynamic_crawler = DynamicContentCrawler(config)
+                self.firecrawl = FirecrawlCrawler(key, max_retries=3, retry_delay=2.0)
             except Exception as e:
-                logger.error(f"Failed to initialize dynamic crawler: {e}")
-                self.use_selenium = False
-    
-    def crawl(self, url: str, force_dynamic: bool = False) -> Optional[WebContent]:
-        """
-        Crawl URL and extract content.
-        
-        Args:
-            url: URL to crawl
-            force_dynamic: If True, force use of Selenium even if not default
-            
-        Returns:
-            WebContent object or None if crawl failed
-        """
-        # Determine which crawler to use
-        use_dynamic = force_dynamic or self.use_selenium
-        
-        if use_dynamic and self.dynamic_crawler:
-            return self.dynamic_crawler.crawl(url, fallback_to_static=True)
+                logger.warning(f"Could not init Firecrawl: {e}")
         else:
-            return self.static_crawler.crawl(url)
-    
-    def is_approved_source(self, url: str) -> bool:
-        """
-        Check if URL is from an approved source.
-        
-        Args:
-            url: URL to check
+            logger.warning("No Firecrawl API Key found.")
             
-        Returns:
-            True if URL is from approved source
-        """
-        return self.static_crawler._is_approved_source(url)
+        self.static = SimpleStaticCrawler(max_retries=2, timeout=15)
+        
+        # Track crawl statistics
+        self.stats = {
+            'total_attempts': 0,
+            'firecrawl_success': 0,
+            'static_success': 0,
+            'failures': 0
+        }
+        
+    def crawl(self, url: str, force_dynamic: bool = False) -> Optional[WebContent]:
+        """Crawl URL with Firecrawl first, then fallback to static."""
+        self.stats['total_attempts'] += 1
+        
+        # Always try Firecrawl first
+        if self.firecrawl:
+            content = self.firecrawl.scrape(url)
+            if content and content.main_text and len(content.main_text) >= 50:
+                self.stats['firecrawl_success'] += 1
+                return content
+            logger.info(f"Firecrawl failed or returned insufficient content for {url}, trying fallback")
+        
+        # Fallback to static crawler
+        content = self.static.crawl(url)
+        if content and content.main_text and len(content.main_text) >= 50:
+            self.stats['static_success'] += 1
+            return content
+        
+        self.stats['failures'] += 1
+        logger.error(f"All crawl methods failed for {url}")
+        return None
+
+    def extract_content(self, url: str, force_dynamic: bool = False) -> Optional[Dict[str, Any]]:
+        """Extract content and return as dictionary."""
+        content = self.crawl(url)
+        if content:
+            return content.to_dict()
+        return None
+    
+    def get_stats(self) -> Dict[str, int]:
+        """Get crawl statistics."""
+        return self.stats.copy()
+        
+    def is_approved_source(self, url: str) -> bool:
+        """Check if URL is from an approved source."""
+        # List of priority domains for Vietnamese fact-checking
+        priority_domains = [
+            '.gov.vn', 'chinhphu.vn', 'gso.gov.vn', 'quochoi.vn',
+            'thuvienphapluat.vn', 'vnexpress.net', 'tuoitre.vn',
+            'thanhnien.vn', 'vtv.vn', 'vov.vn', 'nhandan.vn',
+            'baochinhphu.vn', 'moh.gov.vn', 'mof.gov.vn'
+        ]
+        
+        url_lower = url.lower()
+        return any(domain in url_lower for domain in priority_domains)
